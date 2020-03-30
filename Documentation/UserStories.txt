@@ -1,0 +1,3 @@
+As a user, I want a program thats easily understod.
+As a programmer, I want to see structured code.
+As a user, I want the program to run smoothly.

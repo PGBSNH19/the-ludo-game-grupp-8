@@ -2,18 +2,20 @@
 
 We used the MS Whiteboard to all be able to write and post pictures in a shared enviroment were we could all do actions at the same time.
 
+
+## Picture 1
 ![CewlDokumentationImage_1](Dokumentation1.png)
 
 
-
+## Picture 2
 ![CewlDokumentationImage_2](Dokumentation2.png)
 
 
-
+## Picture 3
 ![CewlDokumentationImage_3](Dokumentation3.png)
 
 
-
+## Full Image
 ![CewlWhiteboard](Whiteboard.svg)
 
 

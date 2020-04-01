@@ -2,11 +2,11 @@
 
 We used the MS Whiteboard to all be able to write and post pictures in a shared enviroment were we could all do actions at the same time.
 
-![Dokumentation_Del_1](Dokumentation Del 1.png)
+![Dokumentation1](Dokumentation Del 1.png)
 
-![Dokumentation_Del_2](Dokumentation Del 2.png)
+![Dokumentation2](Dokumentation Del 2.png)
 
-![Dokumentation_Del_3](Dokumentation Del 3.png)
+![Dokumentation3](Dokumentation Del 3.png)
 
 # User Stories
 

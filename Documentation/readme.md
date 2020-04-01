@@ -5,13 +5,17 @@ We used the MS Whiteboard to all be able to write and post pictures in a shared 
 ![DokumentationDel_1](Dokumentation1.png)
 
 
+
 ![DokumentationDel_2](Dokumentation2.png)
+
 
 
 ![DokumentationDel_3](Dokumentation3.png)
 
 
+
 ![Whiteboard](Whiteboard.svg)
+
 
 
 # User Stories

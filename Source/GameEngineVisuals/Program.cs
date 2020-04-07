@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -18,7 +19,111 @@ namespace GameEngineVisuals
         static char[,] g_cmMainGrid = new char[MAINGRID_X, MAINGRID_Y];
         private static Mutex g_mutex = new Mutex();
 
- 
+
+
+        public class MapVertex
+        {
+            public MapVertex(int iX, int iY)
+            {
+                m_iX = iX;
+                m_iY = iY;
+            }
+            public int m_iX;
+            public int m_iY;
+        }
+
+
+        static List<MapVertex> g_vPosition = new List<MapVertex>();                   // TODO: currently there's a bug where the last cordinate/index wont get added.
+
+  
+        //-----------------------------------------------------------------------------
+        // loadMapFromFile
+        //-----------------------------------------------------------------------------		
+        // start cordinate index from grid mid to allow for subtraction. ie (iLenght * 0,5).
+        public static void loadMapFromFile(MapVertex mapVertex)
+        {
+
+            string sContent = File.ReadAllText("Map.bsp"); ;
+            char[] cContent = sContent.ToCharArray();
+            int iOffset = 0;
+            //int iPath;
+
+            int i = 0; // mapVertex.m_iX / 2;   // 5, start at mid
+            int j = mapVertex.m_iY / 2;   // 5, start at mid
+
+            //int i = 5;   // 5, start at mid
+            //int j = 5;   // 5, start at mid
+
+            for (int x = 0; x != sContent.Length; x++)
+            {
+
+                switch (cContent[x])
+                {
+
+                    case 'D':
+                        //iPath = direction.down;
+
+                        for (int g = 0; g != iOffset; g++)
+                        {
+                            MapVertex vertex = new MapVertex(i, j);
+                            g_vPosition.Add(vertex);
+                            i++;
+
+                        }
+                        break;
+
+                    case 'U':
+                        for (int g = 0; g != iOffset; g++)
+                        {
+                            MapVertex vertex = new MapVertex(i, j);
+                            g_vPosition.Add(vertex);
+                            i--;
+
+                        }
+                        break;
+
+                    case 'L':
+                        //iPath = direction.left;
+                        for (int g = 0; g != iOffset; g++)
+                        {
+                            MapVertex vertex = new MapVertex(i, j);
+                            g_vPosition.Add(vertex);
+                            j--;
+
+                        }
+                        break;
+
+                    case 'R':
+                        for (int g = 0; g != iOffset; g++)
+                        {
+                            MapVertex vertex = new MapVertex(i, j);
+                            g_vPosition.Add(vertex);
+                            j++;
+
+                        }
+                        break;
+
+                    default:                                 // content was a number, ignore that and restart main while loop to check next char.
+                        iOffset = (int)Char.GetNumericValue(cContent[x]);
+
+                        //(Convert char to int)
+                        continue;
+                        //-----------------------------------------------------------------------------		
+
+                }
+
+
+            }
+        }
+
+
+
+
+
+
+
+
+
 
         //-----------------------------------------------------------------------------
         // Initilize Frame Buffer, 
@@ -167,6 +272,16 @@ namespace GameEngineVisuals
             }
 
 
+            //-----------------------------------------------------------------------------
+            // getSizeAsObject
+            //-----------------------------------------------------------------------------		
+            public MapVertex getSizeAsObject()
+            {
+                MapVertex mapVertex = new MapVertex(m_iSizeX, m_iSizeY);
+                return mapVertex;
+            }
+
+
 
             //-----------------------------------------------------------------------------
             // addSmartObject
@@ -184,7 +299,7 @@ namespace GameEngineVisuals
             // wipeMatrix
             //    -heavy, use sparingly  O(n²)
             //-----------------------------------------------------------------------------
-            public void wipeMatrix(char cFillWith)
+            public void wipeMatrix(char cFillWith)  // <-- discount memset substitute
             {
                 //memset(cmGrid, ' ', (GRIDSIZE_Y * GRIDSIZE_X));
                 for (int j = 0; j < m_iSizeX; j++)
@@ -204,7 +319,13 @@ namespace GameEngineVisuals
                 m_cmGrid[iLocY, iLocY] = cSymbol;
             }
 
-
+            //-----------------------------------------------------------------------------
+            // setPixelMap
+            //-----------------------------------------------------------------------------		
+            public void setPixelMap(MapVertex mapVertex, char cSymbol)
+            {
+                m_cmGrid[mapVertex.m_iX, mapVertex.m_iY] = cSymbol;
+            }
 
             //-----------------------------------------------------------------------------
             // sendToGlobalBuffer
@@ -240,7 +361,6 @@ namespace GameEngineVisuals
                     m_cmGrid[iLocX, iLocY + i] = str[i];
                 }
             }
-
         }
 
         //-----------------------------------------------------------------------------
@@ -398,9 +518,10 @@ namespace GameEngineVisuals
         //------------------------------------------------------------------------------				
         static void Main(string[] args)
         {
-            initializeFrameBuffer('.'); // M is the widest, this creates the most symmetrical square
+            initializeFrameBuffer(' '); // M is the widest, this creates the most symmetrical square
             Console.WriteLine("Loading...");
             //List<string> vCachedPixelBuffer = new List<string>();
+         
 
             //SubGrid squarePopup = new SubGrid(42, 42,42,42);
             //squarePopup.wipeMatrix('c');
@@ -419,8 +540,18 @@ namespace GameEngineVisuals
 
 
             SubGrid levelGrid = new SubGrid(16, 11, 11, 0);
-            levelGrid.wipeMatrix('P');
+            //levelGrid.wipeMatrix('P');
+
+            loadMapFromFile(levelGrid.getSizeAsObject());
+
+
+            for (int i = 0; i < g_vPosition.Count; i++)
+            {
+                levelGrid.setPixelMap(g_vPosition[i], '.');
+            }
             levelGrid.sendToGlobalBuffer();
+
+
 
 
             diceWidget diceWidget = new diceWidget(16, 1, 0, 0);

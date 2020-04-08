@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameEngineLogic
 {
@@ -10,6 +6,8 @@ namespace GameEngineLogic
     {
         static void Main(string[] args)
         {
+            StartMenu.Menu();
         }
+
     }
 }

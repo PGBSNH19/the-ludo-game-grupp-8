@@ -10,8 +10,8 @@ namespace DatabaseManager
         public string Name { get; set; }
         public string Color { get; set; }
         public int Position { get; set; }
-        public int pawns { get; set; }
-#nullable enable
-        public int GameId { get; set; }
+        public bool Won { get; set; }
+        public virtual ICollection<Pawn> Pawns { get; set; }
+        public virtual Game Game { get; set; }
     }
 }

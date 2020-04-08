@@ -9,7 +9,7 @@ namespace DatabaseManager
 
         static void Main(string[] args)
         {
-            GameCreation.GameCreate();
+            //GameCreation.GameCreate();
         }
     }
 }

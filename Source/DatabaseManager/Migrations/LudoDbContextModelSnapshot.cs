@@ -46,6 +46,26 @@ namespace DatabaseManager.Migrations
                     b.ToTable("games");
                 });
 
+            modelBuilder.Entity("DatabaseManager.Pawn", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("position")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("pawns");
+                });
+
             modelBuilder.Entity("DatabaseManager.Player", b =>
                 {
                     b.Property<int>("Id")
@@ -56,7 +76,7 @@ namespace DatabaseManager.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GameId")
+                    b.Property<int?>("GameId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -65,8 +85,8 @@ namespace DatabaseManager.Migrations
                     b.Property<int>("Position")
                         .HasColumnType("int");
 
-                    b.Property<int>("pawns")
-                        .HasColumnType("int");
+                    b.Property<bool>("Won")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -75,13 +95,18 @@ namespace DatabaseManager.Migrations
                     b.ToTable("players");
                 });
 
+            modelBuilder.Entity("DatabaseManager.Pawn", b =>
+                {
+                    b.HasOne("DatabaseManager.Player", "Player")
+                        .WithMany("Pawns")
+                        .HasForeignKey("PlayerId");
+                });
+
             modelBuilder.Entity("DatabaseManager.Player", b =>
                 {
-                    b.HasOne("DatabaseManager.Game", null)
+                    b.HasOne("DatabaseManager.Game", "Game")
                         .WithMany("Players")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GameId");
                 });
 #pragma warning restore 612, 618
         }

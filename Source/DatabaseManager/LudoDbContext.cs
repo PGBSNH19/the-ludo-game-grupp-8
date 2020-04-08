@@ -8,6 +8,7 @@ namespace DatabaseManager
 
         public DbSet<Player> players { get; set; }
         public DbSet<Game> games { get; set; }
+        public DbSet<Pawn> pawns { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

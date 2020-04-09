@@ -31,16 +31,23 @@ namespace GameEngineLogic
             var PlayerAmount = MenuNavigator.Menu.ShowMenu(PlayerAmountList);
 
             List<string> CurrentColors = new List<string>();
-            CurrentColors.AddRange(new string[] { "Red", "Green", "Blue", "Yellow" });
+            CurrentColors.AddRange(new string[] { "Red", "Green", "Blue", "Yellow" });          
             CurrentColors = PlayerCreation.PlayerCreate(GameName, CurrentColors,Int32.Parse(PlayerAmount));
+            var Id = context.games.FirstOrDefault(p => p.Name == GameName);
             if (PlayerAmount != "4")
             {
                 var BotAmount = BotDialogue(int.Parse(PlayerAmount));
                 if (BotAmount > 0)
                 {
-                    BotCreation.CreateBot(CurrentColors);
+                    BotCreation.CreateBot(CurrentColors, Id);
                 }
-            }      
+            }
+            //Create Pawns
+            PawnCreation.CreatePawn(Id);
+
+
+            //StartGame
+            GameStart.StartOfGame(Id, true);
             int BotDialogue(int Choice)
             {
                 var BotAmount = 0;

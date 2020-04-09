@@ -1,7 +1,4 @@
-﻿
-
-
-
+﻿using GameEngineLogic;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace GameEngineVisuals
 {
-    class Program
+    public class Program
     {
-        const int MAINGRID_X = 32;
-        const int MAINGRID_Y = 16;
+        const int MAINGRID_X = 18;
+        const int MAINGRID_Y = 64;
         static char[,] g_cmMainGrid = new char[MAINGRID_X, MAINGRID_Y];
         private static Mutex g_mutex = new Mutex();
 
@@ -33,7 +30,7 @@ namespace GameEngineVisuals
         }
 
 
-        static List<MapVertex> g_vPosition = new List<MapVertex>();                   // TODO: currently there's a bug where the last cordinate/index wont get added.
+        static List<MapVertex> g_vPosition = new List<MapVertex>();             // TODO: currently there's a bug where the last cordinate/index wont get added.
 
   
         //-----------------------------------------------------------------------------
@@ -115,16 +112,6 @@ namespace GameEngineVisuals
 
             }
         }
-
-
-
-
-
-
-
-
-
-
         //-----------------------------------------------------------------------------
         // Initilize Frame Buffer, 
         //		fills the matrix with specifed symbol, default is 32
@@ -140,9 +127,6 @@ namespace GameEngineVisuals
                 }
             }
         }
-
-
-
         //-----------------------------------------------------------------------------
         // Converts all chars into strings instead in advance. Should run in the background
         //-----------------------------------------------------------------------------
@@ -170,9 +154,6 @@ namespace GameEngineVisuals
                 }
             }
         }
-
-
-
         //-----------------------------------------------------------------------------
         // Draws the grid to the conosle, should only be called after all functions have changed their pixels
         //	 r̶u̶n̶ ̶o̶n̶ ̶e̶x̶t̶e̶r̶n̶a̶l̶ ̶t̶h̶r̶e̶a̶d̶ ̶d̶u̶e̶ ̶t̶o̶ ̶i̶n̶f̶i̶n̶i̶t̶e̶ ̶w̶h̶i̶l̶e̶ ̶l̶o̶o̶p̶
@@ -217,8 +198,6 @@ namespace GameEngineVisuals
             }
         }
 
-
-
         //-----------------------------------------------------------------------------
         // Vertex
         //-----------------------------------------------------------------------------				
@@ -227,7 +206,6 @@ namespace GameEngineVisuals
             public Vertex m_pNext; // tell pawn next vertex in path // operator overload =
             public int m_iLocX;
             public int m_iLocY;
-
 
             //-----------------------------------------------------------------------------
             // Constructor
@@ -248,7 +226,6 @@ namespace GameEngineVisuals
 
 
         }
-
 
         //-----------------------------------------------------------------------------
         // SubGrid
@@ -271,7 +248,6 @@ namespace GameEngineVisuals
                 m_iSizeX = iSizeX;
             }
 
-
             //-----------------------------------------------------------------------------
             // getSizeAsObject
             //-----------------------------------------------------------------------------		
@@ -280,8 +256,6 @@ namespace GameEngineVisuals
                 MapVertex mapVertex = new MapVertex(m_iSizeX, m_iSizeY);
                 return mapVertex;
             }
-
-
 
             //-----------------------------------------------------------------------------
             // addSmartObject
@@ -345,8 +319,6 @@ namespace GameEngineVisuals
                 }
             }
 
-
-
             //-----------------------------------------------------------------------------
             // sendTextToBuffer
             //      -the iLocX & iLocY ofsets are local. They dont care about the global matrix
@@ -386,9 +358,6 @@ namespace GameEngineVisuals
                          // (-1, array index)
             }
 
-
-
-
             //-----------------------------------------------------------------------------
             // deactivate
             //-----------------------------------------------------------------------------		
@@ -396,8 +365,6 @@ namespace GameEngineVisuals
             {
                 m_bActive = false;
             }
-
-
 
             //-----------------------------------------------------------------------------
             // activate
@@ -465,11 +432,7 @@ namespace GameEngineVisuals
                 return m_iDiceSeed;
             }
 
-
         }
-
-
-
 
         public static void printVector()
         {
@@ -489,10 +452,7 @@ namespace GameEngineVisuals
             }
         }
 
-
         static List<string> g_vCachedPixelBuffer = new List<string>();
-
-
 
         //-----------------------------------------------------------------------------
         // finalize
@@ -507,9 +467,6 @@ namespace GameEngineVisuals
             }
         }
 
-
-
-
         //-----------------------------------------------------------------------------
         // Main
         //
@@ -518,10 +475,12 @@ namespace GameEngineVisuals
         //------------------------------------------------------------------------------				
         static void Main(string[] args)
         {
+
             initializeFrameBuffer(' '); // M is the widest, this creates the most symmetrical square
+
             Console.WriteLine("Loading...");
             //List<string> vCachedPixelBuffer = new List<string>();
-         
+
 
             //SubGrid squarePopup = new SubGrid(42, 42,42,42);
             //squarePopup.wipeMatrix('c');
@@ -530,29 +489,45 @@ namespace GameEngineVisuals
 
             //SubGrid rectangelPopup = new SubGrid(64, 32, 60, 30);
             //rectangelPopup.wipeMatrix('X');
-            //rectangelPopup.sendTextToBuffer("Gaben");
             //rectangelPopup.sendToGlobalBuffer();
 
-            SubGrid uiGrid = new SubGrid(16, 8, 0, 0);
-            uiGrid.wipeMatrix('U');
+            SubGrid uiGrid = new SubGrid(64, 6, 1, 0);
+            uiGrid.wipeMatrix(' ');
+
+            uiGrid.sendTextToBuffer("Name1",            0, 0);
+            uiGrid.sendTextToBuffer("Name2",            0, 14);
+            uiGrid.sendTextToBuffer("Name3",            0, 28);
+            uiGrid.sendTextToBuffer("Name4",            0, 42);
+
+            uiGrid.sendTextToBuffer("Color: Red",       1, 0);
+            uiGrid.sendTextToBuffer("Color: Green",     1, 14);
+            uiGrid.sendTextToBuffer("Color: Blue",      1, 28);
+            uiGrid.sendTextToBuffer("Color: Yellow",    1, 42);
+
+            uiGrid.sendTextToBuffer("Pawns: 1/4",       2, 0);
+            uiGrid.sendTextToBuffer("Pawns: 2/4",       2, 14);
+            uiGrid.sendTextToBuffer("Pawns: 3/4",       2, 28);
+            uiGrid.sendTextToBuffer("Pawns: 4/4",       2, 42);
+
+            //uiGrid.wipeMatrix('U');
             uiGrid.sendToGlobalBuffer();
 
-
-
-            SubGrid levelGrid = new SubGrid(16, 11, 11, 0);
+            SubGrid levelGrid = new SubGrid(16, 11, 4, 0);
             //levelGrid.wipeMatrix('P');
 
             loadMapFromFile(levelGrid.getSizeAsObject());
 
+            //StartMenu.Menu();
+            
 
             for (int i = 0; i < g_vPosition.Count; i++)
             {
                 levelGrid.setPixelMap(g_vPosition[i], '.');
             }
+            levelGrid.setPixelMap(g_vPosition[21], 'G');
             levelGrid.sendToGlobalBuffer();
 
-
-
+            
 
             diceWidget diceWidget = new diceWidget(16, 1, 0, 0);
             diceWidget.sendToGlobalBuffer();
@@ -560,15 +535,11 @@ namespace GameEngineVisuals
             Thread thread = new Thread(diceWidget.activate);
             thread.Start();
 
-
             //Thread thread = new Thread(finalize);
             //thread.Start();
 
-
             //Thread renderThread = new Thread(printVector);
             //renderThread.Start();
-
-
 
             //printVector();
             while (true)
@@ -583,8 +554,6 @@ namespace GameEngineVisuals
             //Thread.Sleep(500);
             //}
         }
-
-
 
     }
 }

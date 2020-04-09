@@ -1,25 +1,38 @@
-﻿using System;
+﻿using DatabaseManager;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace GameEngineLogic
 {
     public class BotCreation
     {
-        public static void CreateBot(List<string> CurrentColors)
+        public static void CreateBot(List<string> CurrentColors, Game GameId)
         {
+            using var context = new LudoDbContext();
             List<string> BotNames = new List<string>();
             BotNames.AddRange(new string[] { "Lion", "Panda", "Tiger" });
             var BotAmount = CurrentColors.Count;
             for(int i = 0; i < BotAmount;i++)
             {
                 var Name = BotRandomizer(BotNames);
-                var Color = BotRandomizer(CurrentColors);               
+                BotNames = Banner.ListBan(Name, BotNames);
+                var Color = BotRandomizer(CurrentColors);
+                CurrentColors = Banner.ListBan(Color, CurrentColors);
+                var bot = new Player
+                {
+                    Name = Name,
+                    Color = Color,
+                    Game = GameId,
+                    Won = false
+                };
+
+                context.Add(bot);
+                context.SaveChanges();
+
             }
-           
-            
-            //Add bots to Db
-            Console.WriteLine("Create " + CurrentColors.Count + " Bots!");
+   
         }
        static string BotRandomizer(List<string> List)
         {

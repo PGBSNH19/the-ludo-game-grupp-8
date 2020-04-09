@@ -19,7 +19,7 @@ namespace GameEngineLogic
             Console.WriteLine("Welcome " + CurrentName + " Whats your preferred color?");
             
             var SelectedColor = MenuNavigator.Menu.ShowMenu(CurrentColors);
-            CurrentColors = ColorBan(SelectedColor, CurrentColors);
+            CurrentColors = Banner.ListBan(SelectedColor, CurrentColors);
          
             Console.WriteLine("You have successfully chosen the color " + SelectedColor + "!");
             using var context = new LudoDbContext();
@@ -28,7 +28,6 @@ namespace GameEngineLogic
             {
                 Name = CurrentName,
                 Color = SelectedColor,
-                Position = 0,
                 Game = Retriver,
                 Won = false
             };
@@ -44,20 +43,7 @@ namespace GameEngineLogic
             }
             return CurrentColors;
         }
-        static List<string> ColorBan(string SelectedColor, List<string> subjects)
-        {
-            for (int i = 0; i < subjects.Count; i++)
-            {
-                if (subjects[i] == SelectedColor)
-                {
-                    subjects.RemoveAt(i);
-                    return subjects;
-                }
-            }
-            return subjects;
-
-        }
-       
+            
     }
 }
 

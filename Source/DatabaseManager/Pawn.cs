@@ -6,9 +6,10 @@ namespace DatabaseManager
 {
     public class Pawn
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public virtual Player Player { get; set; }
-        public int position { get; set; }
+        public int Position { get; set; }
+        public string State { get; set; }
 
     }
 }

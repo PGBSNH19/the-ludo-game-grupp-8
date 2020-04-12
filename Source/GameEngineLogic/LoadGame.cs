@@ -3,53 +3,54 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameEngineLogic
 {
     public class LoadGame
     {
-        public static void Loading()
+        /*
+        [Name]
+        Gamename
+        (Turn)
+        12
+        (Players)
+        player1: 3/4 
+        player2: 2/4
+        player3: 2/4
+        player4: 0/4
+        (LastCheckpoint)
+        2020-03-20 13:55
+        */
+        public static Game Loading()
         {
-            var context = new LudoDbContext();            
-            List <Game> GamesInProgress = context.games.Where(g => g.GameEnded == false).ToList();
-            String[] GameName = new String[GamesInProgress.Count];
+            var context = new LudoDbContext();
+            var gamesInProgress = context.games.Where(g => g.GameEnded == false).Include(g => g.Players).ThenInclude(p => p.Pawns).ToList();
+            var gamenames = new List<string>();
 
-            for (int k = 0; k < GamesInProgress.Count(); k++)
+            foreach (var game in gamesInProgress)
             {
-                Console.WriteLine("[Name]\n" + GamesInProgress[k].Name + "\n" +
-                "(Turn)\n" + GamesInProgress[k].Turn + "\n" +
-                "(Players)");
-                GameName[k] = GamesInProgress[k].Name;
-                var Players = context.players.Where(p => p.Game == GamesInProgress[k]).ToList();
-                for(int i = 0; i < Players.Count; i++)
+                gamenames.Add(game.Name);
+                Console.WriteLine($"[Name]\n {game.Name}\n (Turn)\n{game.Turn}\n (Players)");
+
+                foreach (var player in game.Players)
                 {
-                    Console.WriteLine(Players[i].Name);
+                    Console.WriteLine(player.Name);
                 }
-                Console.WriteLine("(LastCheckpoint)\n" + GamesInProgress[k].LastCheckpointTime + "\n");
+
+                Console.WriteLine($"(LastCheckpoint)\n{game.LastCheckpointTime}\n");
             }
-            List<string> GameNames = new List<string>();
-            GameNames.AddRange(GameName);
-            var hello = MenuNavigator.Menu.ShowMenu(GameNames);
-            GamesInProgress.Where(p => p.Name == hello);
+
+            var chosenName = MenuNavigator.Menu.ShowMenu(gamenames);
+
+            var chosenGame = gamesInProgress.FirstOrDefault(p => p.Name == chosenName);
+
             //Resume Game
 
+            return chosenGame;
         }
-
-
 
     }
 }
 
-/*
-[Name]
-Gamename
-(Turn)
-12
-(Players)
-player1: 3/4 
-player2: 2/4
-player3: 2/4
-player4: 0/4
-(LastCheckpoint)
-2020-03-20 13:55
-*/
+

@@ -32,8 +32,8 @@ namespace DatabaseManager.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     Color = table.Column<string>(nullable: true),
-                    Position = table.Column<int>(nullable: false),
                     Won = table.Column<bool>(nullable: false),
+                    MovementPattern = table.Column<string>(nullable: true),
                     GameId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -51,14 +51,15 @@ namespace DatabaseManager.Migrations
                 name: "pawns",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PlayerId = table.Column<int>(nullable: true),
-                    position = table.Column<int>(nullable: false)
+                    Position = table.Column<int>(nullable: false),
+                    PawnState = table.Column<int>(nullable: false),
+                    PlayerId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_pawns", x => x.id);
+                    table.PrimaryKey("PK_pawns", x => x.Id);
                     table.ForeignKey(
                         name: "FK_pawns_players_PlayerId",
                         column: x => x.PlayerId,

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace DatabaseManager
@@ -12,7 +14,12 @@ namespace DatabaseManager
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Game>();        
+            modelBuilder.Entity<Game>();
+            modelBuilder.Entity<Player>()
+                .Property(e => e.MovementPattern)
+                .HasConversion(
+                    v => string.Join(',', v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)

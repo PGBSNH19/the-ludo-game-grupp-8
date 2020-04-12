@@ -1,17 +1,14 @@
 ﻿using DatabaseManager;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 
 
 namespace GameEngineLogic
 {
     public class GameCreation
     {
-        public static void GameCreate()
+        public static Game GameCreate()
         {
-           
             Console.WriteLine("What do you want your session to be called?");
             var GameName = Console.ReadLine();
             using var context = new LudoDbContext();
@@ -22,47 +19,64 @@ namespace GameEngineLogic
                 GameEnded = false,
                 Turn = 1,
             };
-            context.games.Add(game);            
+            context.games.Add(game);
             context.SaveChanges();
 
             Console.WriteLine("How many players are there?");
-            List<string> PlayerAmountList = new List<string>();
+            var PlayerAmountList = new List<string>();
             PlayerAmountList.AddRange(new String[] { "1", "2", "3", "4" });
             var PlayerAmount = MenuNavigator.Menu.ShowMenu(PlayerAmountList);
 
-            List<string> CurrentColors = new List<string>();
+            var CurrentColors = new List<string>();
             CurrentColors.AddRange(new string[] { "Red", "Green", "Blue", "Yellow" });
-            CurrentColors = PlayerCreation.PlayerCreate(GameName, CurrentColors,Int32.Parse(PlayerAmount));
+            CurrentColors = PlayerCreation.PlayerCreate(game, CurrentColors,Int32.Parse(PlayerAmount));
+            
             if (PlayerAmount != "4")
             {
                 var BotAmount = BotDialogue(int.Parse(PlayerAmount));
                 if (BotAmount > 0)
                 {
-                    BotCreation.CreateBot(CurrentColors);
+                    BotCreation.CreateBots(CurrentColors, game);
                 }
-            }      
-            int BotDialogue(int Choice)
+            }
+
+            context.SaveChanges();
+            return game;
+        }
+
+        private static int BotDialogue(int Choice)
+        {
+            var BotAmount = 0;
+            if (Choice > 1)
             {
-                var BotAmount = 0;
-                
                 List<string> Alternatives = new List<string>();
-                Alternatives.AddRange(new string[]{"Yes", "No" });
+                Alternatives.AddRange(new string[] { "Yes", "No" });
                 Console.WriteLine("Do You want bots?");
-                string Answer = MenuNavigator.Menu.ShowMenu(Alternatives);        
+                string Answer = MenuNavigator.Menu.ShowMenu(Alternatives);
                 if (Answer == "Yes")
                 {
-                    var AvailableBots = 4 - Choice;
-                    string[] BotArray = new string[AvailableBots];
-                    Console.WriteLine("How many do you want?");
-                    for (int i = 0; i < AvailableBots; i++)
-                    {
-                        BotArray[i] += i + 1;
-                    }
-                    List<string> BotList = new List<string>();
-                    BotList.AddRange(BotArray);
-                    BotAmount = Int32.Parse(MenuNavigator.Menu.ShowMenu(BotList));
+                    BotAmount = BotAmountChoice();
                 }
-                return BotAmount;              
+            }
+            else
+            {
+                BotAmount = BotAmountChoice();
+            }
+            return BotAmount;
+
+            int BotAmountChoice()
+            {
+                var AvailableBots = 4 - Choice;
+                string[] BotArray = new string[AvailableBots];
+                Console.WriteLine("How many bots do you want?");
+                for (int i = 0; i < AvailableBots; i++)
+                {
+                    BotArray[i] += i + 1;
+                }
+                List<string> BotList = new List<string>();
+                BotList.AddRange(BotArray);
+                BotAmount = Int32.Parse(MenuNavigator.Menu.ShowMenu(BotList));
+                return BotAmount;
             }
         }
     }

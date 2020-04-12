@@ -1,32 +1,37 @@
-﻿using DatabaseManager;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using DatabaseManager;
 
 namespace GameEngineLogic
 {
     public class StartMenu
     {
-        public static void Menu()
+        public static Game Menu()
         {
             List<string> MenuAlternatives = new List<string>();
-            MenuAlternatives.AddRange(new string[] { "New Game", "Load Game", "Scoreboard", "Exit" });
+            MenuAlternatives.AddRange(new string[] {"New Game", "Load Game", "Scoreboard", "Exit"});
             var Choice = MenuNavigator.Menu.ShowMenu(MenuAlternatives);
             switch (Choice)
             {
                 case "New Game":
-                    GameCreation.GameCreate();
-                    break;
+                    var game = GameCreation.GameCreate();
+                    return game;
                 case "Load Game":
-                 LoadGame.Loading();
-                    break;
+                    game = LoadGame.Loading();
+                    return game;
+
                 case "Scoreboard":
                     Scoreboard.CreateScoreboard();
+                    Console.WriteLine("Press any key to continue");
+                    Console.ReadLine();
                     break;
                 case "Exit":
                     System.Environment.Exit(0);
                     break;
             }
+
+            return null;
+
         }
     }
 }

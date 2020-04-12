@@ -6,9 +6,9 @@ namespace DatabaseManager
 {
     public class Pawn
     {
-        public int id { get; set; }
-        public virtual Player Player { get; set; }
-        public int position { get; set; }
-
+        public enum State { Base, Playing, Finished }
+        public int Id { get; set; }
+        public int Position { get; set; }
+        public State PawnState { get; set; }
     }
 }

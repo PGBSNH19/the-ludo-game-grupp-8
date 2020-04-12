@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DatabaseManager.Migrations
 {
     [DbContext(typeof(LudoDbContext))]
-    [Migration("20200407114038_FinalMigration")]
+    [Migration("20200412021002_FinalMigration")]
     partial class FinalMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,18 +50,21 @@ namespace DatabaseManager.Migrations
 
             modelBuilder.Entity("DatabaseManager.Pawn", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("PawnState")
+                        .HasColumnType("int");
+
                     b.Property<int?>("PlayerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("position")
+                    b.Property<int>("Position")
                         .HasColumnType("int");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.HasIndex("PlayerId");
 
@@ -81,11 +84,11 @@ namespace DatabaseManager.Migrations
                     b.Property<int?>("GameId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("MovementPattern")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Position")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Won")
                         .HasColumnType("bit");
@@ -99,14 +102,14 @@ namespace DatabaseManager.Migrations
 
             modelBuilder.Entity("DatabaseManager.Pawn", b =>
                 {
-                    b.HasOne("DatabaseManager.Player", "Player")
+                    b.HasOne("DatabaseManager.Player", null)
                         .WithMany("Pawns")
                         .HasForeignKey("PlayerId");
                 });
 
             modelBuilder.Entity("DatabaseManager.Player", b =>
                 {
-                    b.HasOne("DatabaseManager.Game", "Game")
+                    b.HasOne("DatabaseManager.Game", null)
                         .WithMany("Players")
                         .HasForeignKey("GameId");
                 });

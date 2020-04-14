@@ -58,7 +58,7 @@ namespace GameEngineVisuals
                     {
                         Console.WriteLine("Do you want to save the game?");
                         List<string> optionss = new List<string>();
-                        options.AddRange(new string[] { "Yes", "No" });
+                        optionss.AddRange(new string[] { "Yes", "No" });
 
                         var choicee = MenuNavigator.Menu.ShowMenu(optionss);
                         if (choicee == "Yes")

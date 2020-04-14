@@ -173,7 +173,7 @@ namespace GameEngineLogic
             var r = 0;
             if(Bot)
             {
-                r = RandomNumber.Next(0, 7);
+                r = RandomNumber.Next(1, 7);
             }
             else
             {

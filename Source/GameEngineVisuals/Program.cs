@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using DatabaseManager;
 using GameEngineLogic;
 
@@ -10,39 +11,60 @@ namespace GameEngineVisuals
     {
 
         static void Main(string[] args)
-        {
-            var game = InitializeGame();
-            
+        {           
+            var context = InitializeGame();
+            var game = context.games.First(g => g.InProgress == true);
+            game.InProgress = false;
+            context.SaveChanges();
             var gui = new GameGui();
-            var allPlaying = true;
+            var allPlaying = true; 
             var index = 0;
-            string[] Colors = new string[] { "Red", "Green", "Blue", "Yellow" };
-            
+            for (int i = 1; i < game.Turn; i++)
+            {
+                index++;
+                if (index > 4)
+                {
+                    index = 0;
+                }
+            }
+            string[] colors = new string[] { "Red", "Green", "Blue", "Yellow" };
+            var lastPawnPlayed = new Pawn();
 
             while (allPlaying)
             {
-                var Color = Colors[index];
+                var color = colors[index];
                 gui.Clear();
-                gui.ShowStats(game,Color);
                 gui.ShowBoard(game);
+                gui.ShowStats(game,color);      
                 if (gui.CheckFinishedStatus(game))
                 {
                     allPlaying = false;
+                    Console.Clear();
+                    var winner = game.Players.First(p => p.Color == color);
+                    Console.WriteLine(winner.Name);
+                    Console.ReadLine();
+                    context.SaveChanges();
                 }
                 else
                 {
-                    var col = "Blue";
-                    gui.RollDiceNextPlayer(game, col);
+                    Console.WriteLine("Press ENTER to continue");
+                    Console.ReadKey();
+                    lastPawnPlayed = gui.RollDiceNextPlayer(context, game, color);                 
                     index++;
                     if (index > 3)
                     {
                         index = 0;
                     }
                 }
+                game.Turn += 1;
+                var plater = new Player()
+                {
+                    Name = "But Why"
+                };               
             }
         }
 
-        private static Game InitializeGame()
+        private static LudoDbContext InitializeGame()
         {
             return StartMenu.Menu();
         }

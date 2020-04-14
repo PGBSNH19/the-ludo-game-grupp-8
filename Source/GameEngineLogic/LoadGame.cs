@@ -22,10 +22,10 @@ namespace GameEngineLogic
         (LastCheckpoint)
         2020-03-20 13:55
         */
-        public static Game Loading()
+        public static LudoDbContext Loading()
         {
             var context = new LudoDbContext();
-            var gamesInProgress = context.games.Where(g => g.GameEnded == false).Include(g => g.Players).ThenInclude(p => p.Pawns).ToList();
+            var gamesInProgress = context.games.Where(g => g.Complete == false).Include(g => g.Players).ThenInclude(p => p.Pawns).ToList();
             var gamenames = new List<string>();
 
             foreach (var game in gamesInProgress)
@@ -44,10 +44,9 @@ namespace GameEngineLogic
             var chosenName = MenuNavigator.Menu.ShowMenu(gamenames);
 
             var chosenGame = gamesInProgress.FirstOrDefault(p => p.Name == chosenName);
-
-            //Resume Game
-
-            return chosenGame;
+            chosenGame.InProgress = true;
+            context.SaveChanges();
+            return context;
         }
 
     }

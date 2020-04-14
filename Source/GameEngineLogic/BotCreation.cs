@@ -6,31 +6,23 @@ namespace GameEngineLogic
 {
     public class BotCreation
     {
-        public static void CreateBots(List<string> currentColors, Game game)
+        public static void CreateBots(LudoDbContext context, Game game, List<string> currentColors)
         {
-            using var context = new LudoDbContext();
             List<string> BotNames = new List<string>();
             BotNames.AddRange(new string[] { "Lion", "Panda", "Tiger" });
             var BotAmount = currentColors.Count;
             for(int i = 0; i < BotAmount;i++)
             {
-                var Name = BotRandomizer(BotNames);
+                var Name = Randomizer.ListRandomizer(BotNames);
                 BotNames = Banner.ListBan(Name, BotNames);
-                var Color = BotRandomizer(currentColors);
+                var Color = Randomizer.ListRandomizer(currentColors);
                 currentColors = Banner.ListBan(Color, currentColors);
-                var bot = PlayerFactory.Create(Name, Color);
+                var bot = PlayerFactory.Create(Name, Color ,true);
 
                 game.Players.Add(bot);
             }
    
         }
-       static string BotRandomizer(List<string> List)
-        {
-
-            var RandomName = new Random();
-            int r = RandomName.Next(List.Count);
-
-            return (string)List[r];
-        }
+       
     }
 }

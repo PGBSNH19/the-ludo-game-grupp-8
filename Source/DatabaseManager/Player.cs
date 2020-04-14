@@ -6,6 +6,7 @@ namespace DatabaseManager
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public bool Bot { get; set; }
         public string Color { get; set; }
         public bool Won { get; set; }
         public ICollection<Pawn> Pawns { get; set; }

@@ -7,7 +7,7 @@ namespace GameEngineLogic
 
     public class PlayerCreation
     {       
-        public static List<string> PlayerCreate(Game game, List<string> CurrentColors, int PlayerAmount)
+        public static List<string> PlayerCreate(LudoDbContext context, Game game, List<string> CurrentColors, int PlayerAmount)
         {
             Console.WriteLine("Whats your name player?");
             var CurrentName = Console.ReadLine();
@@ -18,15 +18,14 @@ namespace GameEngineLogic
             CurrentColors = Banner.ListBan(SelectedColor, CurrentColors);
          
             Console.WriteLine("You have successfully chosen the color " + SelectedColor + "!");
-            using var context = new LudoDbContext();
-            var gamer = PlayerFactory.Create(CurrentName, SelectedColor); 
+            var gamer = PlayerFactory.Create(CurrentName, SelectedColor, false); 
             game.Players.Add(gamer);
             context.SaveChanges();
 
             PlayerAmount--;
             if (0 < PlayerAmount)
             {
-                CurrentColors = PlayerCreate(game, CurrentColors, PlayerAmount);   
+                CurrentColors = PlayerCreate(context, game, CurrentColors, PlayerAmount);   
             }
             return CurrentColors;
         }

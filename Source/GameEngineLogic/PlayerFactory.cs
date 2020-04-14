@@ -6,7 +6,7 @@ namespace GameEngineLogic
 {
     public class PlayerFactory
     {
-        public static Player Create(string name, string color)
+        public static Player Create(string name, string color, bool bot)
         {
             var pattern = CreateMovementPattern(color);
 
@@ -15,6 +15,7 @@ namespace GameEngineLogic
                 Name = name,
                 Color = color,
                 Won = false,
+                Bot = bot,
                 MovementPattern = pattern,
                 Pawns = CreatePawns(color)
             };

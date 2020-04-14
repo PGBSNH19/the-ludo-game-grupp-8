@@ -7,16 +7,17 @@ namespace GameEngineLogic
 {
     public class GameCreation
     {
-        public static Game GameCreate()
+        public static LudoDbContext GameCreate()
         {
             Console.WriteLine("What do you want your session to be called?");
             var GameName = Console.ReadLine();
-            using var context = new LudoDbContext();
+            var context = new LudoDbContext();
             var game = new Game()
             {
                 Name = GameName,
                 CreationTime = DateTime.Now,
-                GameEnded = false,
+                Complete = false,
+                InProgress = true,
                 Turn = 1,
             };
             context.games.Add(game);
@@ -29,19 +30,19 @@ namespace GameEngineLogic
 
             var CurrentColors = new List<string>();
             CurrentColors.AddRange(new string[] { "Red", "Green", "Blue", "Yellow" });
-            CurrentColors = PlayerCreation.PlayerCreate(game, CurrentColors,Int32.Parse(PlayerAmount));
+            CurrentColors = PlayerCreation.PlayerCreate(context, game, CurrentColors, Int32.Parse(PlayerAmount));
             
             if (PlayerAmount != "4")
             {
                 var BotAmount = BotDialogue(int.Parse(PlayerAmount));
                 if (BotAmount > 0)
                 {
-                    BotCreation.CreateBots(CurrentColors, game);
+                    BotCreation.CreateBots(context, game, CurrentColors);
                 }
             }
 
             context.SaveChanges();
-            return game;
+            return context;
         }
 
         private static int BotDialogue(int Choice)

@@ -26,10 +26,13 @@ namespace DatabaseManager.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Complete")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("GameEnded")
+                    b.Property<bool>("InProgress")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("LastCheckpointTime")
@@ -75,6 +78,9 @@ namespace DatabaseManager.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Bot")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");

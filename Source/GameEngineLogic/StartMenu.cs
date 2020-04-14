@@ -6,19 +6,24 @@ namespace GameEngineLogic
 {
     public class StartMenu
     {
-        public static Game Menu()
+        public static LudoDbContext Menu()
         {
             List<string> MenuAlternatives = new List<string>();
             MenuAlternatives.AddRange(new string[] {"New Game", "Load Game", "Scoreboard", "Exit"});
             var Choice = MenuNavigator.Menu.ShowMenu(MenuAlternatives);
+            var context = new LudoDbContext();
             switch (Choice)
             {
                 case "New Game":
-                    var game = GameCreation.GameCreate();
-                    return game;
+                    //var game = GameCreation.GameCreate();
+                    //return game;
+                    context = GameCreation.GameCreate();
+                    return context;
                 case "Load Game":
-                    game = LoadGame.Loading();
-                    return game;
+                    //game = LoadGame.Loading();
+                    //return game;
+                    context = LoadGame.Loading();
+                    return context;
 
                 case "Scoreboard":
                     Scoreboard.CreateScoreboard();

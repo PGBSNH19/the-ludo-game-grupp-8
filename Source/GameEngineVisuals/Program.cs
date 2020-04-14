@@ -19,6 +19,7 @@ namespace GameEngineVisuals
             var gui = new GameGui();
             var allPlaying = true; 
             var index = 0;
+            var previousColor = "";
             for (int i = 1; i < game.Turn; i++)
             {
                 index++;
@@ -34,7 +35,7 @@ namespace GameEngineVisuals
             {
                 var color = colors[index];
                 gui.Clear();
-                gui.ShowBoard(game);
+                gui.ShowBoard(game , previousColor);
                 gui.ShowStats(game,color);      
                 if (gui.CheckFinishedStatus(game))
                 {
@@ -47,8 +48,26 @@ namespace GameEngineVisuals
                 }
                 else
                 {
-                    Console.WriteLine("Press ENTER to continue");
-                    Console.ReadKey();
+                    Console.WriteLine("Do you want to Exit the game?");
+                    List<string> options = new List<string>();
+                    options.AddRange(new string[] {"Yes","No"});
+
+                    var choice = MenuNavigator.Menu.ShowMenu(options);
+
+                    if(choice == "Yes")
+                    {
+                        Console.WriteLine("Do you want to save the game?");
+                        List<string> optionss = new List<string>();
+                        options.AddRange(new string[] { "Yes", "No" });
+
+                        var choicee = MenuNavigator.Menu.ShowMenu(optionss);
+                        if (choicee == "Yes")
+                        {
+                            context.SaveChanges();
+                        }
+                        System.Environment.Exit(0);
+                    }
+
                     lastPawnPlayed = gui.RollDiceNextPlayer(context, game, color);                 
                     index++;
                     if (index > 3)
@@ -56,11 +75,8 @@ namespace GameEngineVisuals
                         index = 0;
                     }
                 }
-                game.Turn += 1;
-                var plater = new Player()
-                {
-                    Name = "But Why"
-                };               
+                game.Turn += 1;               
+                previousColor = color;
             }
         }
 

@@ -29,6 +29,7 @@ namespace GameEngineLogic
                     Scoreboard.CreateScoreboard();
                     Console.WriteLine("Press any key to continue");
                     Console.ReadLine();
+                    Menu();
                     break;
                 case "Exit":
                     System.Environment.Exit(0);

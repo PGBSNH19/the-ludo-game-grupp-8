@@ -30,7 +30,7 @@ namespace GameEngineLogic
 
         }
 
-        public void ShowBoard(Game game)
+        public void ShowBoard(Game game, string previousColor)
         {
             var board = new List<string>
             {
@@ -58,7 +58,7 @@ namespace GameEngineLogic
                     }
                     else
                     {
-                        PlacePawnOnBoard(board, player.MovementPattern[pawn.Position], player.Color[0].ToString(), game);
+                        PlacePawnOnBoard(board, player.MovementPattern[pawn.Position], player.Color[0].ToString(), game, previousColor);
                     }
 
                 }
@@ -72,20 +72,24 @@ namespace GameEngineLogic
 
         }
 
-        private void PlacePawnOnBoard(List<string> board, string position, string marker, Game game)
+        private void PlacePawnOnBoard(List<string> board, string position, string marker, Game game , string previousColor)
         {
             var letters = "ABCDEFGHIJK";
             var letterIndex = letters.IndexOf(position[0]);
             var index = Convert.ToInt32(position.Substring(1, position.Length - 1));
-            
             var row = board[letterIndex];
             StringBuilder sb = new StringBuilder(row);
             var firstLetterColor = sb[index].ToString();
-            if (sb[index] != '.' && firstLetterColor != marker)
+            if (sb[index] != '.' && firstLetterColor != marker && marker != previousColor[0].ToString())
             {
-                RemovePawn(game, firstLetterColor, position);
+                RemovePawn(game, marker, position);
+                
             }
-            sb[index] = marker[0];
+            else
+            {
+                sb[index] = marker[0];
+            }
+            
             row = sb.ToString();
             board[letterIndex] = row.ToString();
 
@@ -155,28 +159,39 @@ namespace GameEngineLogic
             return false;
         }
 
-        public Pawn RollDiceNextPlayer(LudoDbContext context ,Game game, string color)
+        public Pawn RollDiceNextPlayer(LudoDbContext context, Game game, string color)
         {
-            var pawn = new Pawn();
-            Console.WriteLine("Press any key for next dice roll!");
-            var RandomNumber = new Random();
-            int r = VisualWidgets.MainFunction();
-            Thread.Sleep(500);        
-            if (r == 0)
-            {
-                r = 1;
-            }
-            Console.WriteLine($"You got {r}");
-            
             var currentPlayer = game.Players.First(p => p.Color == color);
-            var currentPawns = currentPlayer.Pawns;
-            var currentPawnsInBase = currentPawns.Where(p => p.PawnState == Pawn.State.Base);
-            var CurrentPawnsInPlay = currentPawns.Where(p => p.PawnState == Pawn.State.Playing);
             var Bot = false;
             if (currentPlayer.Bot)
             {
                 Bot = true;
             }
+            var pawn = new Pawn();
+            Console.WriteLine("Press any key for next dice roll!");
+            var RandomNumber = new Random();
+            var r = 0;
+            if(Bot)
+            {
+                r = RandomNumber.Next(0, 7);
+            }
+            else
+            {
+                r = VisualWidgets.MainFunction();
+                
+                if (r == 0)
+                {
+                    r = 1;
+                }
+            }
+            Thread.Sleep(500);
+            Console.WriteLine($"You got {r}");
+            
+          
+            var currentPawns = currentPlayer.Pawns;
+            var currentPawnsInBase = currentPawns.Where(p => p.PawnState == Pawn.State.Base);
+            var CurrentPawnsInPlay = currentPawns.Where(p => p.PawnState == Pawn.State.Playing);
+            
 
             if (r == 6 || r == 1 && currentPawnsInBase.Any())
             {
@@ -199,7 +214,6 @@ namespace GameEngineLogic
                         }
                         else
                         {
-                            Options.Add("Exit Game");
                             Console.WriteLine("The Bot will: \n" + Choice);
                             Choice = MenuNavigator.Menu.ShowMenu(Options);
                         }
@@ -231,7 +245,6 @@ namespace GameEngineLogic
                     }
                     else
                     {
-                        Options.Add("Exit Game");
                         Console.WriteLine("What Would you like to do?");
                         Choice = MenuNavigator.Menu.ShowMenu(Options);
                     }
@@ -251,18 +264,6 @@ namespace GameEngineLogic
                         break;
                     case "Move one pawn out of the nest":
                         MovePawnOutOfNest(currentPawns);
-                        break;
-                    case "Exit Game":
-                        Console.WriteLine("Do you want to save your progress?");
-                        List<string> answers = new List<string>();
-                        answers.AddRange(new string[] { "Yes", "No" });
-                        var answer = MenuNavigator.Menu.ShowMenu(answers);
-                        if (answer == "Yes")
-                        {
-                            game.LastCheckpointTime = DateTime.Now;
-                            context.SaveChanges();
-                        }
-                        System.Environment.Exit(0);
                         break;
                 }
             }
@@ -302,7 +303,7 @@ namespace GameEngineLogic
                     {
                         
                         choice = Randomizer.ListRandomizer(pawnPositions);
-                        Console.WriteLine("The bot will move the pawn at position: " + pawnPositions);
+                        Console.WriteLine("The bot will move the pawn at position: " + choice);
                     }
                     else
                     {

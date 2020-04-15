@@ -30,19 +30,6 @@ As a user, I want the program to run smoothly.
 
 As a gamer, I want interactive gameplay so that my skill matters.
 
-## Excelfile
-![CewlExcellFile]
-<?php
-	// If you need to parse XLS files, include php-excel-reader
-	require('php-excel-reader/excel_reader2.php');
-	require('SpreadsheetReader.php');
-	$Reader = new SpreadsheetReader('log.xls');
-	foreach ($Reader as $Row)
-	{
-		print_r($Row);
-	}
-?>
-
 # Documentation
 
 Use this file to fill in your documentation
